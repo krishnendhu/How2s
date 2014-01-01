@@ -1,0 +1,32 @@
+Author:Krishnendhu Prakasan
+Email:www.crypto@gmail.com
+
+> Resetting the root password
+	- kill mysqld daemon
+	- mysqld_safe --skip-grant-tables
+	- mysql --user=root mysql
+	- update user set Password=PASSWORD(' ') where user='root';
+	- flush privileges;
+	- exit;
+	- stop daemon and start again
+
+> My SQL installation
+	- sudo apt-get update
+	- sudo apt-get upgrade 
+	- sudo apt-get install mysql-server mysql-common mysql-client
+	- show databases;
+	- use mysql;
+	- select user , password ,host from user;
+	- update user set host - '%' where user = 'root' and host = '127.0.0.1';
+	- flush privileges;
+	- create database DMS_SAE;
+	- create user 'exel'@'localhost' identified by 'exel'; 
+	- create user 'exel'@'%' identified by 'exel';
+	- grant selection *.* to 'exel'@'localhost';
+	- grant selection *.* to 'exel'@'%';
+	- grant insert,update,delete on DMS_SAE.* to 'exel'@'localhost'
+	- grant insert,update on DMS_SAE.* to 'exel'@'%'
+	- flush privileges ;
+	- yum install csh;
+	- yum install mysql mysql-server;
+	
