@@ -1,0 +1,87 @@
+Installing LAMP in centos
+=========================
+
+yum install httpd httpd-devel
+/etc/init.d/httpd start
+yum install mysql mysql-server mysql-devel
+/etc/init.d/mysqld start
+mysql
+mysql> USE mysql;
+mysql> UPDATE user SET Password=PASSWORD('root') WHERE user='root';
+mysql> FLUSH PRIVILEGES;
+
+Once done, check by logging in:
+
+mysql -u root -p
+Enter Password: <your new password>
+
+yum install php php-mysql php-common php-gd php-mbstring php-mcrypt php-devel php-xml
+
+/etc/init.d/httpd restart
+
+/var/www/html/test.php
+
+>>>
+// test.php
+  <?php
+  phpinfo();
+  ?>
+>>>>>
+
+Backing up procedure
+====================
+mysqldump --database wikidb -u wikiuser -pwikipassword --add-drop-table -B > Backup.sql
+zip -r ./backup/Backup.zip images/ Backup.sql LocalSettings.php extensions/
+
+
+Restoration from Backup
+=======================
+yum install mysql-server mysql php-mysql
+/sbin/chkconfig --levels 235 mysqld on
+/sbin/service mysqld start
+
+mysql
+mysql> USE mysql;
+mysql> UPDATE user SET Password=PASSWORD('root') WHERE user='root';
+mysql> FLUSH PRIVILEGES;
+mysql> CREATE DATABASE wikidb;
+mysql> CREATE USER 'wikiuser'@'localhost' IDENTIFIED BY 'wikipassword';
+mysql> GRANT ALL ON wikidb.* TO 'wikiuser'@'localhost';
+mysql> exit
+
+untar the mediawiki to var/www/html/wiki
+
+chown -R apache:apache /var/www/html/wiki
+
+Go to http://localhost/wiki/config/index.php
+
+Move the config/LocalSettings.php file to the parent directory
+
+Updating the database
+=====================
+php maintanence/update.php
+
+
+Resetting Sysops password
+=========================
+UPDATE `user`
+SET user_password = CONCAT(SUBSTRING(user_password, 1, 3),
+                           SUBSTRING(MD5(user_name), 1, 8),
+                           ':',
+                           MD5(CONCAT(SUBSTRING(MD5(user_name), 1, 8),
+                                      '-', MD5('root'))))
+WHERE user_name = 'WikiSysop';
+
+Duplicating the database
+========================
+
+After creating a database pewiki
+mysqldump -u wikiuser -pwikipassword wikidb | mysql -u wikiuser -pwikipassword pewiki
+
+Username and Passwords
+======================
+
+####	mysql user=root passwd root
+####	Wikipedia db=wikidb  user=wikiuser passwd=wikipasswword
+
+
