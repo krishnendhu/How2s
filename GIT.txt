@@ -1,0 +1,8 @@
+## This is a file that contains git configurations as well as the commands commonly used ##
+
+git config --global --list
+git config --global user.name "Mr Crypto"
+git config --global user.email "www.crypto@gmail.com"
+git config --global color.ui true
+git config --global color.status auto
+git config --global color.branch auto  
